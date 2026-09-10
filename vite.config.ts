@@ -17,7 +17,7 @@ export default defineConfig({
         description: 'مدیریت و یادآوری چک‌های پرداختی و دریافتی',
         lang: 'fa',
         dir: 'rtl',
-        theme_color: '#1f6f5c',
+        theme_color: '#8b2fe0',
         background_color: '#f6f5f1',
         display: 'standalone',
         start_url: '/Cheqino/',
