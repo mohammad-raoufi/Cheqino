@@ -37,7 +37,7 @@ function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <h1>یادآور چک</h1>
+        <h1>چکینو</h1>
         <button type="button" className="primary" onClick={() => setShowForm(true)}>
           + ثبت چک جدید
         </button>
