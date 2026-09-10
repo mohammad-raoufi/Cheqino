@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { ChequeDirection, ChequeInput } from '../types'
+import { IRANIAN_BANKS } from '../lib/banks'
 import { todayIso } from '../lib/shamsi'
 import { ShamsiDatePicker } from './ShamsiDatePicker'
 
@@ -71,14 +72,20 @@ export function ChequeForm({ onSubmit, onCancel }: ChequeFormProps) {
       <div className="field-group direction-toggle">
         <button
           type="button"
-          className={direction === 'payable' ? 'active' : ''}
+          className={
+            direction === 'payable' ? 'direction-payable active' : 'direction-payable'
+          }
           onClick={() => setDirection('payable')}
         >
           پرداختی
         </button>
         <button
           type="button"
-          className={direction === 'receivable' ? 'active' : ''}
+          className={
+            direction === 'receivable'
+              ? 'direction-receivable active'
+              : 'direction-receivable'
+          }
           onClick={() => setDirection('receivable')}
         >
           دریافتی
@@ -88,11 +95,11 @@ export function ChequeForm({ onSubmit, onCancel }: ChequeFormProps) {
       <label className="field">
         <span>مبلغ (ریال)</span>
         <input
-          type="number"
+          className="numeric-field"
+          type="text"
           inputMode="numeric"
-          min="0"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ''))}
           placeholder="۰"
           required
         />
@@ -116,17 +123,22 @@ export function ChequeForm({ onSubmit, onCancel }: ChequeFormProps) {
 
       <label className="field">
         <span>بانک</span>
-        <input
-          type="text"
-          value={bankName}
-          onChange={(e) => setBankName(e.target.value)}
-          placeholder="نام بانک"
-        />
+        <select value={bankName} onChange={(e) => setBankName(e.target.value)}>
+          <option value="" disabled>
+            انتخاب بانک
+          </option>
+          {IRANIAN_BANKS.map((bank) => (
+            <option key={bank} value={bank}>
+              {bank}
+            </option>
+          ))}
+        </select>
       </label>
 
       <label className="field">
         <span>شماره چک</span>
         <input
+          className="numeric-field"
           type="text"
           value={chequeNumber}
           onChange={(e) => setChequeNumber(e.target.value)}

@@ -90,11 +90,30 @@ button.danger {
 }
 
 .view-toggle button.active,
-.status-filter button.active,
-.direction-toggle button.active {
+.status-filter button.active {
   background: var(--accent);
   color: var(--accent-contrast);
   border-color: var(--accent);
+}
+
+.direction-toggle button.direction-payable {
+  color: var(--status-bounced);
+  border-color: var(--status-bounced);
+}
+
+.direction-toggle button.direction-payable.active {
+  background: var(--status-bounced);
+  color: #fff;
+}
+
+.direction-toggle button.direction-receivable {
+  color: var(--status-cleared);
+  border-color: var(--status-cleared);
+}
+
+.direction-toggle button.direction-receivable.active {
+  background: var(--status-cleared);
+  color: #fff;
 }
 
 .selected-date-banner {
@@ -251,12 +270,19 @@ button.danger {
 }
 
 .field input,
+.field select,
 .field textarea {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px;
   background: var(--surface);
   color: var(--text);
+}
+
+.field .numeric-field {
+  font-feature-settings: 'tnum' 1;
+  direction: ltr;
+  text-align: right;
 }
 
 .shamsi-date-picker {
