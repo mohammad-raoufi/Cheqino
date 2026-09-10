@@ -98,7 +98,7 @@ export function ChequeForm({ onSubmit, onCancel }: ChequeFormProps) {
           className="numeric-field"
           type="text"
           inputMode="numeric"
-          value={amount}
+          value={amount ? Number(amount).toLocaleString('en-US') : ''}
           onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ''))}
           placeholder="۰"
           required
