@@ -1,121 +1,121 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { useMemo, useState } from 'react'
 import './App.css'
+import { ChequeCalendar } from './components/ChequeCalendar'
+import { ChequeCard } from './components/ChequeCard'
+import { ChequeForm } from './components/ChequeForm'
+import { Dashboard } from './components/Dashboard'
+import { useCheques } from './hooks/useCheques'
+import { formatShamsi } from './lib/shamsi'
+import { computeStatus, STATUS_LABELS } from './lib/status'
+import type { ChequeStatus } from './types'
+
+type ViewMode = 'list' | 'calendar'
+type StatusFilter = ChequeStatus | 'all'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { cheques, loading, addCheque, updateCheque, removeCheque } = useCheques()
+  const [showForm, setShowForm] = useState(false)
+  const [view, setView] = useState<ViewMode>('list')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+
+  const visibleCheques = useMemo(() => {
+    let list = cheques
+    if (selectedDate) {
+      list = list.filter((c) => c.dueDate === selectedDate)
+    } else if (statusFilter !== 'all') {
+      list = list.filter((c) => computeStatus(c) === statusFilter)
+    }
+    return [...list].sort((a, b) => a.dueDate.localeCompare(b.dueDate))
+  }, [cheques, statusFilter, selectedDate])
+
+  async function handleAddCheque(input: Parameters<typeof addCheque>[0]) {
+    await addCheque(input)
+    setShowForm(false)
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
+    <div className="app-shell">
+      <header className="app-header">
+        <h1>یادآور چک</h1>
+        <button type="button" className="primary" onClick={() => setShowForm(true)}>
+          + ثبت چک جدید
+        </button>
+      </header>
+
+      <Dashboard cheques={cheques} />
+
+      <div className="view-toggle">
         <button
           type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          className={view === 'list' ? 'active' : ''}
+          onClick={() => setView('list')}
         >
-          Count is {count}
+          لیست
         </button>
-      </section>
+        <button
+          type="button"
+          className={view === 'calendar' ? 'active' : ''}
+          onClick={() => setView('calendar')}
+        >
+          تقویم
+        </button>
+      </div>
 
-      <div className="ticks"></div>
+      {view === 'calendar' && (
+        <ChequeCalendar cheques={cheques} onSelectDate={setSelectedDate} />
+      )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {view === 'list' && (
+        <div className="status-filter">
+          {(['all', 'pending', 'due_soon', 'due', 'cleared', 'bounced'] as const).map(
+            (status) => (
+              <button
+                key={status}
+                type="button"
+                className={statusFilter === status ? 'active' : ''}
+                onClick={() => setStatusFilter(status)}
+              >
+                {status === 'all' ? 'همه' : STATUS_LABELS[status]}
+              </button>
+            ),
+          )}
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      {selectedDate && (
+        <div className="selected-date-banner">
+          <span>چک‌های {formatShamsi(selectedDate)}</span>
+          <button type="button" onClick={() => setSelectedDate(null)}>
+            پاک کردن
+          </button>
+        </div>
+      )}
+
+      <main className="cheque-list">
+        {loading && <p className="empty-state">در حال بارگذاری...</p>}
+        {!loading && visibleCheques.length === 0 && (
+          <p className="empty-state">چکی برای نمایش وجود ندارد.</p>
+        )}
+        {visibleCheques.map((cheque) => (
+          <ChequeCard
+            key={cheque.id}
+            cheque={cheque}
+            onMarkCleared={(id) => updateCheque(id, { manualStatus: 'cleared' })}
+            onMarkBounced={(id) => updateCheque(id, { manualStatus: 'bounced' })}
+            onDelete={(id) => removeCheque(id)}
+          />
+        ))}
+      </main>
+
+      {showForm && (
+        <div className="modal-overlay" onClick={() => setShowForm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <ChequeForm onSubmit={handleAddCheque} onCancel={() => setShowForm(false)} />
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
