@@ -15,16 +15,18 @@ async function mirrorChequeToFirestore(cheque: Cheque): Promise<void> {
       ...cheque,
       ownerId: getClientId(),
     })
-  } catch {
+  } catch (err) {
     // best-effort mirror; local IndexedDB stays the source of truth for the UI
+    console.error('Failed to mirror cheque to Firestore', err)
   }
 }
 
 async function removeChequeFromFirestore(id: string): Promise<void> {
   try {
     await deleteDoc(doc(firestore, 'cheques', id))
-  } catch {
+  } catch (err) {
     // best-effort mirror
+    console.error('Failed to remove cheque from Firestore', err)
   }
 }
 
@@ -35,10 +37,13 @@ export function useCheques() {
   const reload = useCallback(async () => {
     const all = await getAllCheques()
     setCheques(all)
+    return all
   }, [])
 
   useEffect(() => {
-    reload().finally(() => setLoading(false))
+    reload()
+      .then((all) => Promise.all(all.map((c) => mirrorChequeToFirestore(c))))
+      .finally(() => setLoading(false))
   }, [reload])
 
   const addCheque = useCallback(
