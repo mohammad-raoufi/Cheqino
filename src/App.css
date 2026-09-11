@@ -79,6 +79,16 @@ button.danger {
   color: var(--text-h);
 }
 
+.notification-settings {
+  margin-bottom: 16px;
+}
+
+.notification-status {
+  font-size: 13px;
+  opacity: 0.75;
+  margin-bottom: 16px;
+}
+
 /* Toggles / filters */
 .view-toggle,
 .status-filter,

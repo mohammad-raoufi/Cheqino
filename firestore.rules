@@ -1,0 +1,30 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /cheques/{chequeId} {
+      allow read: if false;
+      allow create, update: if request.resource.data.keys().hasAll([
+          'id', 'direction', 'amount', 'dueDate', 'ownerId',
+          'reminderDaysBefore', 'notifiedOffsets', 'manualStatus'
+        ])
+        && request.resource.data.id == chequeId
+        && request.resource.data.direction in ['payable', 'receivable']
+        && request.resource.data.amount is number
+        && request.resource.data.dueDate is string
+        && request.resource.data.ownerId is string
+        && request.resource.data.reminderDaysBefore is list
+        && request.resource.data.notifiedOffsets is list;
+      allow delete: if true;
+    }
+
+    match /deviceTokens/{tokenId} {
+      allow read: if false;
+      allow create, update: if request.resource.data.keys().hasAll(['token', 'ownerId', 'createdAt'])
+        && request.resource.data.token == tokenId
+        && request.resource.data.ownerId is string;
+      allow delete: if true;
+    }
+  }
+}

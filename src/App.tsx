@@ -4,6 +4,7 @@ import { ChequeCalendar } from './components/ChequeCalendar'
 import { ChequeCard } from './components/ChequeCard'
 import { ChequeForm } from './components/ChequeForm'
 import { Dashboard } from './components/Dashboard'
+import { NotificationSettings } from './components/NotificationSettings'
 import { useCheques } from './hooks/useCheques'
 import { formatShamsi } from './lib/shamsi'
 import { computeStatus, STATUS_LABELS } from './lib/status'
@@ -44,6 +45,8 @@ function App() {
       </header>
 
       <Dashboard cheques={cheques} />
+
+      <NotificationSettings />
 
       <div className="view-toggle">
         <button
