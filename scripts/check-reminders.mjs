@@ -38,6 +38,24 @@ const DIRECTION_LABEL = {
 
 async function main() {
   const today = todayIso()
+  console.log(`DEBUG today=${today}`)
+
+  const allChequesSnap = await db.collection('cheques').get()
+  console.log(`DEBUG total cheques in Firestore: ${allChequesSnap.size}`)
+  for (const d of allChequesSnap.docs) {
+    const c = d.data()
+    console.log(
+      `DEBUG cheque ${d.id}: dueDate=${c.dueDate} manualStatus=${JSON.stringify(c.manualStatus)} ownerId=${c.ownerId ? 'set' : 'MISSING'} reminderDaysBefore=${JSON.stringify(c.reminderDaysBefore)} notifiedOffsets=${JSON.stringify(c.notifiedOffsets)}`,
+    )
+  }
+
+  const allTokensSnap = await db.collection('deviceTokens').get()
+  console.log(`DEBUG total deviceTokens in Firestore: ${allTokensSnap.size}`)
+  for (const d of allTokensSnap.docs) {
+    const t = d.data()
+    console.log(`DEBUG token ${d.id.slice(0, 12)}...: ownerId=${t.ownerId ? 'set' : 'MISSING'}`)
+  }
+
   const chequesSnap = await db.collection('cheques').where('manualStatus', '==', null).get()
 
   for (const chequeDoc of chequesSnap.docs) {
