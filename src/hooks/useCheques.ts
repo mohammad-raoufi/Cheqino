@@ -42,7 +42,9 @@ export function useCheques() {
 
   useEffect(() => {
     reload()
-      .then((all) => Promise.all(all.map((c) => mirrorChequeToFirestore(c))))
+      .then((all) => {
+        void Promise.all(all.map((c) => mirrorChequeToFirestore(c)))
+      })
       .finally(() => setLoading(false))
   }, [reload])
 
@@ -58,7 +60,7 @@ export function useCheques() {
         updatedAt: now,
       }
       await putCheque(cheque)
-      await mirrorChequeToFirestore(cheque)
+      void mirrorChequeToFirestore(cheque)
       await reload()
       return cheque
     },
@@ -75,7 +77,7 @@ export function useCheques() {
         updatedAt: new Date().toISOString(),
       }
       await putCheque(updated)
-      await mirrorChequeToFirestore(updated)
+      void mirrorChequeToFirestore(updated)
       await reload()
     },
     [cheques, reload],
@@ -84,7 +86,7 @@ export function useCheques() {
   const removeCheque = useCallback(
     async (id: string) => {
       await deleteCheque(id)
-      await removeChequeFromFirestore(id)
+      void removeChequeFromFirestore(id)
       await reload()
     },
     [reload],
