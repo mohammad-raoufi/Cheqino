@@ -17,8 +17,8 @@ messaging.onBackgroundMessage((payload) => {
   const title = payload.notification?.title ?? 'چکینو'
   const options = {
     body: payload.notification?.body ?? '',
-    icon: '/Cheqino/icon-192.png',
-    badge: '/Cheqino/icon-192.png',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
     data: payload.data ?? {},
   }
   self.registration.showNotification(title, options)
@@ -26,5 +26,5 @@ messaging.onBackgroundMessage((payload) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
-  event.waitUntil(self.clients.openWindow('/Cheqino/'))
+  event.waitUntil(self.clients.openWindow('/'))
 })

@@ -20,8 +20,8 @@ export async function enableNotifications(): Promise<NotificationSetupResult> {
   }
 
   const registration = await navigator.serviceWorker.register(
-    '/Cheqino/firebase-messaging-sw.js',
-    { scope: '/Cheqino/firebase-cloud-messaging-push-scope' },
+    '/firebase-messaging-sw.js',
+    { scope: '/firebase-cloud-messaging-push-scope' },
   )
 
   const token = await getToken(messaging, {

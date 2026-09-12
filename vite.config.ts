@@ -4,14 +4,14 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Cheqino/',
+  base: '/',
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.png', 'apple-touch-icon.png'],
       manifest: {
-        id: '/Cheqino/',
+        id: '/',
         name: 'چکینو - یادآور چک',
         short_name: 'چکینو',
         description: 'مدیریت و یادآوری چک‌های پرداختی و دریافتی',
@@ -20,8 +20,8 @@ export default defineConfig({
         theme_color: '#8b2fe0',
         background_color: '#f6f5f1',
         display: 'standalone',
-        start_url: '/Cheqino/',
-        scope: '/Cheqino/',
+        start_url: '/',
+        scope: '/',
         icons: [
           {
             src: 'icon-192.png',
