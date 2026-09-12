@@ -11,10 +11,17 @@ function createId(): string {
 
 async function mirrorChequeToFirestore(cheque: Cheque): Promise<void> {
   try {
-    await setDoc(doc(firestore, 'cheques', cheque.id), {
-      ...cheque,
-      ownerId: getClientId(),
-    })
+    // notifiedOffsets is server-owned (set by the reminder check job); never
+    // overwrite it from the client mirror, or repeat reminders get re-sent.
+    const { notifiedOffsets: _notifiedOffsets, ...rest } = cheque
+    await setDoc(
+      doc(firestore, 'cheques', cheque.id),
+      {
+        ...rest,
+        ownerId: getClientId(),
+      },
+      { merge: true },
+    )
   } catch (err) {
     // best-effort mirror; local IndexedDB stays the source of truth for the UI
     console.error('Failed to mirror cheque to Firestore', err)
