@@ -1,0 +1,14 @@
+name: iOS - Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: iOS project not set up yet
+        run: |
+          echo "mobile/ios has no Xcode project yet — nothing to build."
+          echo "This workflow is a placeholder so CI structure matches web/Android."

@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Android (mobile/android)
+mobile/android/android/.gradle/
+mobile/android/android/build/
+mobile/android/android/app/build/
+mobile/android/android/capacitor-cordova-android-plugins/build/
+mobile/android/android/local.properties
+mobile/android/android/app/google-services.json
+mobile/android/www/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

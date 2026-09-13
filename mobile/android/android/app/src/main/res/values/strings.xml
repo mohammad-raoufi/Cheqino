@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">چکینو</string>
+    <string name="title_activity_main">چکینو</string>
+    <string name="package_name">ir.cheqino.app</string>
+    <string name="custom_url_scheme">ir.cheqino.app</string>
+</resources>
