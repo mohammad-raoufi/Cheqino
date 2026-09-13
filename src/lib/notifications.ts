@@ -1,3 +1,5 @@
+import { Capacitor } from '@capacitor/core'
+import { PushNotifications } from '@capacitor/push-notifications'
 import { doc, setDoc } from 'firebase/firestore'
 import { getToken } from 'firebase/messaging'
 import { getClientId } from './clientId'
@@ -8,7 +10,36 @@ export type NotificationSetupResult =
   | { status: 'denied' }
   | { status: 'granted'; token: string }
 
-export async function enableNotifications(): Promise<NotificationSetupResult> {
+async function saveDeviceToken(token: string) {
+  const clientId = getClientId()
+  await setDoc(doc(firestore, 'deviceTokens', token), {
+    token,
+    ownerId: clientId,
+    createdAt: new Date().toISOString(),
+  })
+}
+
+async function enableNativeNotifications(): Promise<NotificationSetupResult> {
+  const permissionStatus = await PushNotifications.requestPermissions()
+  if (permissionStatus.receive !== 'granted') {
+    return { status: 'denied' }
+  }
+
+  return new Promise((resolve, reject) => {
+    PushNotifications.addListener('registration', (token) => {
+      saveDeviceToken(token.value).then(
+        () => resolve({ status: 'granted', token: token.value }),
+        reject,
+      )
+    })
+    PushNotifications.addListener('registrationError', (error) => {
+      reject(new Error(error.error))
+    })
+    PushNotifications.register()
+  })
+}
+
+async function enableWebNotifications(): Promise<NotificationSetupResult> {
   const messaging = await getFirebaseMessaging()
   if (!messaging || !('Notification' in window)) {
     return { status: 'unsupported' }
@@ -29,17 +60,17 @@ export async function enableNotifications(): Promise<NotificationSetupResult> {
     serviceWorkerRegistration: registration,
   })
 
-  const clientId = getClientId()
-  await setDoc(doc(firestore, 'deviceTokens', token), {
-    token,
-    ownerId: clientId,
-    createdAt: new Date().toISOString(),
-  })
+  await saveDeviceToken(token)
 
   return { status: 'granted', token }
 }
 
+export async function enableNotifications(): Promise<NotificationSetupResult> {
+  return Capacitor.isNativePlatform() ? enableNativeNotifications() : enableWebNotifications()
+}
+
 export function getNotificationPermission(): NotificationPermission | 'unsupported' {
+  if (Capacitor.isNativePlatform()) return 'default'
   if (!('Notification' in window)) return 'unsupported'
   return Notification.permission
 }
