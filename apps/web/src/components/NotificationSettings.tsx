@@ -28,7 +28,7 @@ export function NotificationSettings() {
   }
 
   if (permission === 'granted') {
-    return <p className="notification-status">یادآوری‌های چک فعال است.</p>
+    return <span className="notification-indicator">🔔 یادآوری فعال</span>
   }
 
   if (permission === 'unsupported') {
@@ -37,8 +37,13 @@ export function NotificationSettings() {
 
   return (
     <div className="notification-settings">
-      <button type="button" onClick={handleEnable} disabled={loading}>
-        {loading ? 'در حال فعال‌سازی...' : 'فعال‌سازی یادآوری چک'}
+      <button
+        type="button"
+        className="notification-indicator as-button"
+        onClick={handleEnable}
+        disabled={loading}
+      >
+        {loading ? '⏳ در حال فعال‌سازی...' : '🔕 یادآوری‌ها خاموش است'}
       </button>
       {permission === 'denied' && (
         <p className="form-error">

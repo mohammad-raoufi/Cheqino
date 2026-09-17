@@ -1,17 +1,29 @@
 :root {
   --text: #3a3a3a;
   --text-h: #101010;
+  --text-muted: #6b6b6b;
+  --text-faint: #9a9a94;
   --bg: #f6f5f2;
   --surface: #ffffff;
+  --surface-raised: #ffffff;
   --border: #e2e0da;
   --accent: #1f6f5c;
+  --accent-strong: #175a49;
+  --accent-tint: #e3f0ec;
   --accent-contrast: #ffffff;
 
   --status-pending: #6b7280;
-  --status-due-soon: #d97706;
-  --status-due: #dc2626;
-  --status-cleared: #16a34a;
+  --status-pending-tint: #eceef0;
+  --status-due-soon: #b8790a;
+  --status-due-soon-tint: #fbf0dc;
+  --status-due: #c23b32;
+  --status-due-tint: #fbe8e5;
+  --status-cleared: #1f6f5c;
+  --status-cleared-tint: #e3f0ec;
   --status-bounced: #991b1b;
+  --status-bounced-tint: #f8e4e2;
+
+  --shadow: 0 1px 2px rgba(16, 16, 16, 0.04), 0 8px 20px -12px rgba(16, 16, 16, 0.14);
 
   font: 16px/1.7 'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif;
   color-scheme: light dark;
@@ -23,17 +35,29 @@
   :root {
     --text: #d4d4d8;
     --text-h: #f4f4f5;
+    --text-muted: #9a9ba1;
+    --text-faint: #6c6d74;
     --bg: #17181c;
     --surface: #202127;
+    --surface-raised: #262830;
     --border: #33343b;
     --accent: #35a084;
+    --accent-strong: #4fc09f;
+    --accent-tint: #1b332c;
     --accent-contrast: #0a0a0a;
 
     --status-pending: #9ca3af;
+    --status-pending-tint: #2a2c31;
     --status-due-soon: #f59e0b;
+    --status-due-soon-tint: #332a12;
     --status-due: #f87171;
+    --status-due-tint: #3a2220;
     --status-cleared: #4ade80;
+    --status-cleared-tint: #1b3327;
     --status-bounced: #fb7185;
+    --status-bounced-tint: #3a2126;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 24px -14px rgba(0, 0, 0, 0.55);
   }
 }
 
@@ -60,4 +84,11 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+.ltr-num {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
 }

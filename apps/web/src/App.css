@@ -1,8 +1,12 @@
 .app-shell {
   max-width: 720px;
   margin: 0 auto;
-  padding: 16px 16px 48px;
+  padding: 16px 16px 96px;
   min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
 }
 
 .app-header {
@@ -10,7 +14,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 16px;
 }
 
 .app-header h1 {
@@ -22,8 +25,8 @@ button.primary {
   background: var(--accent);
   color: var(--accent-contrast);
   border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
+  border-radius: 10px;
+  padding: 12px 16px;
   font-weight: 600;
 }
 
@@ -40,90 +43,164 @@ button.danger {
   border-color: var(--status-bounced);
 }
 
-/* Dashboard */
-.dashboard {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.dashboard-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  text-align: center;
-}
-
-.dashboard-card.status-due_soon {
-  border-color: var(--status-due-soon);
-}
-
-.dashboard-card.status-due {
-  border-color: var(--status-due);
-}
-
-.dashboard-label {
-  font-size: 12px;
-  color: var(--text);
-  opacity: 0.75;
-}
-
-.dashboard-value {
-  font-size: 18px;
+/* Section titles, shared spacing scale: 4 / 8 / 12 / 16 / 24 / 32 */
+.section-title {
+  font-size: 14.5px;
   font-weight: 700;
-  color: var(--text-h);
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.section-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+.list-section-head {
+  margin-top: 8px;
+}
+
+/* Notification indicator (replaces the old full-width status paragraph) */
+.notification-indicator {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.notification-indicator.as-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .notification-settings {
-  margin-bottom: 16px;
-}
-
-.notification-status {
-  font-size: 13px;
-  opacity: 0.75;
-  margin-bottom: 16px;
-}
-
-/* Toggles / filters */
-.view-toggle,
-.status-filter,
-.direction-toggle {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
 
-.view-toggle button.active,
-.status-filter button.active {
+/* Dashboard: single compact total card, not a 3-stat grid */
+.dashboard-card {
+  background: linear-gradient(155deg, var(--accent-tint), var(--surface) 78%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.dashboard-label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dashboard-value {
+  display: block;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--accent-strong);
+}
+
+/* Spotlight: nearest due cheque */
+.spotlight-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spotlight-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--status-pending);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spotlight-card.status-due_soon {
+  border-inline-start-color: var(--status-due-soon);
+}
+.spotlight-card.status-due {
+  border-inline-start-color: var(--status-due);
+}
+
+.spotlight-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.spotlight-amount {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-h);
+}
+
+.spotlight-party {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.spotlight-meta {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+
+/* List controls: collapsed filter chip + real segmented control */
+.list-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.segmented {
+  display: flex;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.segmented button {
+  border: none;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-faint);
+  padding: 7px 14px;
+  border-radius: 8px;
+}
+
+.segmented button.active {
   background: var(--accent);
   color: var(--accent-contrast);
-  border-color: var(--accent);
-}
-
-.direction-toggle button.direction-payable {
-  color: var(--status-bounced);
-  border-color: var(--status-bounced);
-}
-
-.direction-toggle button.direction-payable.active {
-  background: var(--status-bounced);
-  color: #fff;
-}
-
-.direction-toggle button.direction-receivable {
-  color: var(--status-cleared);
-  border-color: var(--status-cleared);
-}
-
-.direction-toggle button.direction-receivable.active {
-  background: var(--status-cleared);
-  color: #fff;
 }
 
 .selected-date-banner {
@@ -134,7 +211,6 @@ button.danger {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 12px;
-  margin-bottom: 12px;
 }
 
 /* Cheque list & cards */
@@ -153,9 +229,13 @@ button.danger {
 .cheque-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-inline-start: 4px solid var(--status-pending);
-  border-radius: 10px;
-  padding: 14px;
+  border-inline-start: 3px solid var(--status-pending);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
 }
 
 .cheque-card.status-due_soon {
@@ -166,58 +246,95 @@ button.danger {
 }
 .cheque-card.status-cleared {
   border-inline-start-color: var(--status-cleared);
-  opacity: 0.75;
+  opacity: 0.8;
 }
 .cheque-card.status-bounced {
   border-inline-start-color: var(--status-bounced);
 }
 
-.cheque-card-header {
+.cheque-card-top {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 8px;
-  margin-bottom: 8px;
-}
-
-.status-badge {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 999px;
-  color: white;
-  background: var(--status-pending);
-}
-.status-badge.status-due_soon {
-  background: var(--status-due-soon);
-}
-.status-badge.status-due {
-  background: var(--status-due);
-}
-.status-badge.status-cleared {
-  background: var(--status-cleared);
-}
-.status-badge.status-bounced {
-  background: var(--status-bounced);
-}
-
-.direction-badge {
-  font-size: 12px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
 }
 
 .cheque-card-amount {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-h);
-  margin-bottom: 8px;
+}
+
+.cheque-card-party {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.status-badge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  color: var(--status-pending);
+  background: var(--status-pending-tint);
+}
+.status-badge.status-due_soon {
+  color: var(--status-due-soon);
+  background: var(--status-due-soon-tint);
+}
+.status-badge.status-due {
+  color: var(--status-due);
+  background: var(--status-due-tint);
+}
+.status-badge.status-cleared {
+  color: var(--status-cleared);
+  background: var(--status-cleared-tint);
+}
+.status-badge.status-bounced {
+  color: var(--status-bounced);
+  background: var(--status-bounced-tint);
+}
+
+.cheque-card-subline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.direction-tag {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.cheque-card-more {
+  font-size: 12.5px;
+}
+
+.cheque-card-more summary {
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.cheque-card-more summary::-webkit-details-marker {
+  display: none;
 }
 
 .cheque-card-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin: 0 0 10px;
+  margin: 8px 0 0;
 }
 
 .cheque-card-details .full-width {
@@ -232,13 +349,216 @@ button.danger {
 
 .cheque-card-details dd {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.cheque-card-actions {
+.cheque-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.cheque-card-primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.cheque-card-menu {
+  position: relative;
+}
+
+.more-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  font-size: 17px;
+  font-weight: 700;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  inset-inline-end: 0;
+  min-width: 150px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+}
+
+.action-menu button {
+  background: transparent;
+  border: none;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 10px;
+  border-radius: 8px;
+}
+
+.action-menu button.danger {
+  color: var(--status-bounced);
+}
+
+/* Delete confirmation */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 20;
+}
+
+.confirm-dialog {
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.confirm-dialog h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.confirm-dialog p {
+  margin: 0 0 16px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.confirm-actions {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+}
+
+.confirm-actions button {
+  flex: 1;
+}
+
+.confirm-actions button.danger {
+  background: var(--status-bounced);
+  border-color: var(--status-bounced);
+  color: #fff;
+}
+
+/* Floating action button */
+.fab {
+  position: fixed;
+  inset-inline-end: max(20px, calc(50vw - 360px + 20px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  font-size: 26px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  z-index: 15;
+}
+
+/* Filter bottom sheet */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 20;
+}
+
+.sheet {
+  background: var(--bg);
+  width: 100%;
+  max-width: 480px;
+  border-radius: 16px 16px 0 0;
+  padding: 8px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+.sheet-grab {
+  width: 36px;
+  height: 4px;
+  border-radius: 3px;
+  background: var(--border);
+  margin: 8px auto 14px;
+}
+
+.sheet h3 {
+  font-size: 14.5px;
+  margin: 0 0 8px;
+}
+
+.sheet-option {
+  width: 100%;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 2px;
+  font-size: 13.5px;
+}
+
+.sheet-option:first-of-type {
+  border-top: none;
+}
+
+.sheet-option-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sheet-option-count {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex: none;
+  display: inline-block;
+}
+
+.radio.checked {
+  border-color: var(--accent);
+  background: radial-gradient(var(--accent) 0 42%, transparent 44%);
 }
 
 /* Form */
@@ -320,13 +640,38 @@ button.danger {
   gap: 8px;
 }
 
+/* Direction toggle (payable / receivable) inside the form */
+.direction-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.direction-toggle button.direction-payable {
+  color: var(--status-bounced);
+  border-color: var(--status-bounced);
+}
+
+.direction-toggle button.direction-payable.active {
+  background: var(--status-bounced);
+  color: #fff;
+}
+
+.direction-toggle button.direction-receivable {
+  color: var(--status-cleared);
+  border-color: var(--status-cleared);
+}
+
+.direction-toggle button.direction-receivable.active {
+  background: var(--status-cleared);
+  color: #fff;
+}
+
 /* Calendar */
 .cheque-calendar {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px;
-  margin-bottom: 16px;
 }
 
 .calendar-header {

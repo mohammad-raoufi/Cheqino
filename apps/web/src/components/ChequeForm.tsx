@@ -137,7 +137,7 @@ export function ChequeForm({ onSubmit, onCancel }: ChequeFormProps) {
       <label className="field">
         <span>شماره چک</span>
         <input
-          className="numeric-field"
+          className="numeric-field ltr-num"
           type="text"
           value={chequeNumber}
           onChange={(e) => setChequeNumber(e.target.value)}

@@ -28,3 +28,12 @@ export const STATUS_COLORS: Record<ChequeStatus, string> = {
   cleared: 'var(--status-cleared)',
   bounced: 'var(--status-bounced)',
 }
+
+// Status is never conveyed by color alone: each one also gets its own icon glyph.
+export const STATUS_ICONS: Record<ChequeStatus, string> = {
+  pending: '🕐',
+  due_soon: '🟡',
+  due: '🔴',
+  cleared: '✅',
+  bounced: '↩️',
+}
