@@ -1,7 +1,6 @@
-import { deleteDoc, doc, setDoc } from 'firebase/firestore'
 import { useCallback, useEffect, useState } from 'react'
 import { deleteCheque, getAllCheques, putCheque } from '../lib/db'
-import { firestore, getClientId } from '@cheqino/shared'
+import { getClientId, getFirestoreInstance } from '@cheqino/shared'
 import type { Cheque, ChequeInput } from '@cheqino/shared'
 
 function createId(): string {
@@ -13,6 +12,8 @@ async function mirrorChequeToFirestore(cheque: Cheque): Promise<void> {
     // notifiedOffsets is server-owned (set by the reminder check job); never
     // overwrite it from the client mirror, or repeat reminders get re-sent.
     const { notifiedOffsets: _notifiedOffsets, ...rest } = cheque
+    const { doc, setDoc } = await import('firebase/firestore')
+    const firestore = await getFirestoreInstance()
     await setDoc(
       doc(firestore, 'cheques', cheque.id),
       {
@@ -29,6 +30,8 @@ async function mirrorChequeToFirestore(cheque: Cheque): Promise<void> {
 
 async function removeChequeFromFirestore(id: string): Promise<void> {
   try {
+    const { deleteDoc, doc } = await import('firebase/firestore')
+    const firestore = await getFirestoreInstance()
     await deleteDoc(doc(firestore, 'cheques', id))
   } catch (err) {
     // best-effort mirror

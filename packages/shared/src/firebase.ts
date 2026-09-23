@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { initializeFirestore } from 'firebase/firestore'
-import { getMessaging, isSupported } from 'firebase/messaging'
+import type { Firestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDRDebYaC3YtBRn0D2GjtMf6N-YhuDPafw',
@@ -20,13 +19,27 @@ export const VAPID_KEY =
 const FIRESTORE_PROXY_HOST = 'cheqino-firestore-proxy.cheqino.workers.dev'
 
 export const firebaseApp = initializeApp(firebaseConfig)
-export const firestore = initializeFirestore(firebaseApp, {
-  host: FIRESTORE_PROXY_HOST,
-  ssl: true,
-  experimentalForceLongPolling: true,
-})
+
+// firebase/firestore and firebase/messaging are dynamically imported: they're
+// only needed for background mirroring and on-demand notification setup, not
+// for first paint, so keeping them out of the eager bundle shrinks it a lot.
+let firestorePromise: Promise<Firestore> | null = null
+
+export function getFirestoreInstance(): Promise<Firestore> {
+  if (!firestorePromise) {
+    firestorePromise = import('firebase/firestore').then(({ initializeFirestore }) =>
+      initializeFirestore(firebaseApp, {
+        host: FIRESTORE_PROXY_HOST,
+        ssl: true,
+        experimentalForceLongPolling: true,
+      }),
+    )
+  }
+  return firestorePromise
+}
 
 export async function getFirebaseMessaging() {
+  const { getMessaging, isSupported } = await import('firebase/messaging')
   if (!(await isSupported())) return null
   return getMessaging(firebaseApp)
 }

@@ -1,13 +1,19 @@
-import { useMemo, useState } from 'react'
+import { lazy, Suspense, useMemo, useState } from 'react'
 import './App.css'
-import { ChequeCalendar } from './components/ChequeCalendar'
 import { ChequeCard } from './components/ChequeCard'
-import { ChequeForm } from './components/ChequeForm'
 import { Dashboard } from './components/Dashboard'
 import { NotificationSettings } from './components/NotificationSettings'
+import { SeoSection } from './components/SeoSection'
 import { useCheques } from './hooks/useCheques'
 import { computeStatus, formatAmount, formatShamsi, STATUS_ICONS, STATUS_LABELS } from '@cheqino/shared'
 import type { Cheque, ChequeStatus } from '@cheqino/shared'
+
+const ChequeCalendar = lazy(() =>
+  import('./components/ChequeCalendar').then((m) => ({ default: m.ChequeCalendar })),
+)
+const ChequeForm = lazy(() =>
+  import('./components/ChequeForm').then((m) => ({ default: m.ChequeForm })),
+)
 
 type ViewMode = 'list' | 'calendar'
 type StatusFilter = ChequeStatus | 'all'
@@ -115,7 +121,9 @@ function App() {
       </div>
 
       {view === 'calendar' && (
-        <ChequeCalendar cheques={cheques} onSelectDate={setSelectedDate} />
+        <Suspense fallback={null}>
+          <ChequeCalendar cheques={cheques} onSelectDate={setSelectedDate} />
+        </Suspense>
       )}
 
       {selectedDate && (
@@ -142,6 +150,8 @@ function App() {
           />
         ))}
       </main>
+
+      <SeoSection />
 
       <button type="button" className="fab" aria-label="ثبت چک جدید" onClick={() => setShowForm(true)}>
         +
@@ -176,7 +186,9 @@ function App() {
       {showForm && (
         <div className="modal-overlay" onClick={() => setShowForm(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <ChequeForm onSubmit={handleAddCheque} onCancel={() => setShowForm(false)} />
+            <Suspense fallback={null}>
+              <ChequeForm onSubmit={handleAddCheque} onCancel={() => setShowForm(false)} />
+            </Suspense>
           </div>
         </div>
       )}

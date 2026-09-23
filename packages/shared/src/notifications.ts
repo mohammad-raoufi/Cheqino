@@ -1,9 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 import { PushNotifications } from '@capacitor/push-notifications'
-import { doc, setDoc } from 'firebase/firestore'
-import { getToken } from 'firebase/messaging'
 import { getClientId } from './clientId'
-import { firestore, getFirebaseMessaging, VAPID_KEY } from './firebase'
+import { getFirebaseMessaging, getFirestoreInstance, VAPID_KEY } from './firebase'
 
 export type NotificationSetupResult =
   | { status: 'unsupported' }
@@ -11,6 +9,8 @@ export type NotificationSetupResult =
   | { status: 'granted'; token: string }
 
 async function saveDeviceToken(token: string) {
+  const { doc, setDoc } = await import('firebase/firestore')
+  const firestore = await getFirestoreInstance()
   const clientId = getClientId()
   await setDoc(doc(firestore, 'deviceTokens', token), {
     token,
@@ -55,6 +55,7 @@ async function enableWebNotifications(): Promise<NotificationSetupResult> {
     { scope: '/firebase-cloud-messaging-push-scope' },
   )
 
+  const { getToken } = await import('firebase/messaging')
   const token = await getToken(messaging, {
     vapidKey: VAPID_KEY,
     serviceWorkerRegistration: registration,

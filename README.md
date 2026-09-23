@@ -40,3 +40,33 @@ Requires JDK 21 for the Android build (pinned via `mobile/android/android/gradle
 - `.github/workflows/pwa.yml` — builds and deploys the web app to GitHub Pages, and runs the daily reminder check.
 - `.github/workflows/android.yml` — builds the Android debug APK.
 - `.github/workflows/ios.yml` — placeholder until an iOS project exists.
+
+## SEO
+
+- `apps/web/index.html` carries the title/description, Open Graph and Twitter
+  card tags (`og-image.png`, 1200×630), and `WebApplication` JSON-LD.
+- `apps/web/src/components/SeoSection.tsx` renders the on-page intro copy and
+  FAQ (with `FAQPage` JSON-LD) shown at the bottom of the single-page app.
+- `apps/web/public/robots.txt` and `apps/web/public/sitemap.xml` — the site
+  has no client-side router, so the sitemap lists only the root URL; add a
+  new `<url>` entry there if a real route is ever introduced.
+- `apps/web/public/BingSiteAuth.xml` — Bing Webmaster Tools site verification
+  file, served at `https://cheqino.ir/BingSiteAuth.xml`.
+
+**Do not add an `AggregateRating` schema** unless there is real, verifiable
+rating data (e.g. from an app store listing) to back it — fabricated ratings
+violate Google's structured data guidelines and can trigger a manual action.
+
+**Verifying structured data:** after deploying, paste
+`https://cheqino.ir/` into the
+[Google Rich Results Test](https://search.google.com/test/rich-results) to
+confirm the `WebApplication` and `FAQPage` items are picked up without
+errors.
+
+**Search Console / Bing Webmaster Tools:**
+1. Google Search Console → add property `https://cheqino.ir/` → verify via
+   the existing DNS/hosting ownership (GitHub Pages) or an HTML meta tag.
+2. Bing Webmaster Tools → add site `https://cheqino.ir/` → verify via the
+   `BingSiteAuth.xml` file already served at the site root (or import
+   directly from Google Search Console).
+3. Submit `https://cheqino.ir/sitemap.xml` in both tools.

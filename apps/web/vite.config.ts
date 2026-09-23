@@ -43,6 +43,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+        // Social-preview image only; crawlers fetch it directly, the app never
+        // needs it offline, so keep it out of the precache.
+        globIgnores: ['og-image.png'],
       },
     }),
   ],
