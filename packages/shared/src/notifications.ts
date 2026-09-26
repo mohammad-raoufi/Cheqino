@@ -19,6 +19,17 @@ async function saveDeviceToken(token: string) {
   })
 }
 
+function waitUntilActive(registration: ServiceWorkerRegistration): Promise<void> {
+  if (registration.active) return Promise.resolve()
+  const worker = registration.installing ?? registration.waiting
+  if (!worker) return Promise.resolve()
+  return new Promise((resolve) => {
+    worker.addEventListener('statechange', () => {
+      if (worker.state === 'activated') resolve()
+    })
+  })
+}
+
 async function enableNativeNotifications(): Promise<NotificationSetupResult> {
   const permissionStatus = await PushNotifications.requestPermissions()
   if (permissionStatus.receive !== 'granted') {
@@ -54,6 +65,11 @@ async function enableWebNotifications(): Promise<NotificationSetupResult> {
     '/firebase-messaging-sw.js',
     { scope: '/firebase-cloud-messaging-push-scope' },
   )
+  // getToken() subscribes via the PushManager, which requires an active
+  // service worker; register() can resolve before activation finishes, so
+  // this scope's own registration (not the default navigator.serviceWorker.ready,
+  // which tracks the page's own scope) must be waited on explicitly.
+  await waitUntilActive(registration)
 
   const { getToken } = await import('firebase/messaging')
   const token = await getToken(messaging, {

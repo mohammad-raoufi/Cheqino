@@ -87,6 +87,14 @@ async function main() {
         body,
       },
       data: { chequeId: chequeDoc.id },
+      android: {
+        notification: { sound: 'default' },
+      },
+      apns: {
+        payload: {
+          aps: { sound: 'default' },
+        },
+      },
     })
     console.log(
       `cheque ${chequeDoc.id}: sent ${response.successCount}/${tokens.length} notifications`,
