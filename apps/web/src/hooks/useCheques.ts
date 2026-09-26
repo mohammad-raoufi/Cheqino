@@ -8,20 +8,22 @@ function createId(): string {
 }
 
 async function mirrorChequeToFirestore(cheque: Cheque): Promise<void> {
+  // notifiedOffsets is server-owned (set by the reminder check job); never
+  // overwrite it from the client mirror, or repeat reminders get re-sent.
+  const { notifiedOffsets, ...rest } = cheque
   try {
-    // notifiedOffsets is server-owned (set by the reminder check job); never
-    // overwrite it from the client mirror, or repeat reminders get re-sent.
-    const { notifiedOffsets: _notifiedOffsets, ...rest } = cheque
     const { doc, setDoc } = await import('firebase/firestore')
     const firestore = await getFirestoreInstance()
-    await setDoc(
-      doc(firestore, 'cheques', cheque.id),
-      {
-        ...rest,
-        ownerId: getClientId(),
-      },
-      { merge: true },
-    )
+    const ref = doc(firestore, 'cheques', cheque.id)
+    const withoutNotifiedOffsets = { ...rest, ownerId: getClientId() }
+    try {
+      await setDoc(ref, withoutNotifiedOffsets, { merge: true })
+    } catch {
+      // The doc doesn't exist remotely yet, so the merge above produced a
+      // document missing notifiedOffsets, which security rules reject.
+      // Retry including it so the doc can actually be created.
+      await setDoc(ref, { ...withoutNotifiedOffsets, notifiedOffsets }, { merge: true })
+    }
   } catch (err) {
     // best-effort mirror; local IndexedDB stays the source of truth for the UI
     console.error('Failed to mirror cheque to Firestore', err)
